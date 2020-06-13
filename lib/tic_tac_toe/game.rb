@@ -19,11 +19,40 @@ module TicTacToe
       human_move_to_coordinate(human_move)
     end
 
-    private
-
     def switch_players
       @current_player, @other_player = @other_player, @current_player
     end
+
+    def game_over_message
+      return "#{current_player.name} wins!" if board.game_over == :winner
+      return "It's a draw!" if board.game_over == :draw
+    end
+
+    def play
+      puts "#{current_player.name} has been randomly selected as the first player."
+      while true
+        board.formatted_grid
+        puts ""
+        loop do
+          puts request_move
+          x, y = get_move
+          if board.get_cell(x, y).value.empty?
+            board.set_cell(x, y, current_player.color)
+            break
+          end
+        end
+        x, y = get_move
+        if board.game_over
+          puts game_over_message
+          board.formatted_grid
+          return
+        else
+          switch_players
+        end
+      end
+    end
+
+    private
 
     def human_move_to_coordinate(human_move)
       mapping = {
